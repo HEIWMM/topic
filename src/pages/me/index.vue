@@ -18,7 +18,7 @@ export default {
         yeargo
     },
     mounted(){
-        getSetting().then((e)=>{this.userinfo = e.userInfo;this.openid = e.open_id;});
+        getSetting().then((e)=>{console.log(e);this.userinfo = e.userInfo;this.openid = e.open_id;});
         
     },
     methods:{

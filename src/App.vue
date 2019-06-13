@@ -30,6 +30,7 @@ export default {
 }
 </script> -->
 
+
 <script>
 import { get } from "./until";
 import config from "./config";
@@ -40,12 +41,11 @@ export default {
     // const logs = wx.getStorageSync('logs') || []
     // logs.unshift(Date.now())
     // wx.setStorageSync('logs', logs)
-
     // const res = await get("/weapp/demo");
     // 利用server从后台拿到数据
     // console.log(123, res);
     // console.log(config.loginUrl);
-    
+
     // wx.checkSession({
     //   success() {
     //     wx.switchTab({
@@ -60,8 +60,63 @@ export default {
     //     // 重新登录
     //   }
     // });
-    
+
     console.log("小程序启动了");
+  },
+  mounted() {
+    console.log("mounted");
+  },
+  onLaunch() {
+    var _this = this;
+    var a = 5;
+    wx.checkSession({
+      success() {
+        console.log(_this.$store.state.count, "load");
+        console.log("success");
+      },
+      fail() {
+        console.log("failed");
+        wx.login({
+          success(res) {
+            if (res.code) {
+              _this.doLogin(res);
+            } else {
+              console.log("登录请求发送失败");
+            }
+          }
+        });
+      }
+    });
+  },
+  methods: {
+    doLogin(res) {
+      const appid = "wx2a34dbca0701939e";
+      const secret = "7ab74c842dd8621eafdd79e7f4e23939";
+      this.$fly
+        .get(
+          "https://api.weixin.qq.com/sns/jscode2session?appid=" +
+            appid +
+            "&secret=" +
+            secret +
+            "&js_code=" +
+            res.code +
+            "&grant_type=authorization_code",
+          {
+            params: {
+              appid: appid,
+              secret: secret,
+              js_code: res.code,
+              grant_type: "authorization_code"
+            }
+          }
+        )
+        .then(e => console.log("登录请求发送成功", e));
+    }
+  },
+  data() {
+    return {
+      num: 0
+    };
   }
 };
 </script>
